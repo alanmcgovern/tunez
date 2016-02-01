@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <MSBuildAllProjects>$(MSBuildAllProjects);$(MSBuildThisFileFullPath)</MSBuildAllProjects>
+    <HasSharedItems>true</HasSharedItems>
+    <SharedGUID>{4FE48E0F-3789-4D5E-9726-FF07C44E78A3}</SharedGUID>
+  </PropertyGroup>
+  <PropertyGroup Label="Configuration">
+    <Import_RootNamespace>Tunez</Import_RootNamespace>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="$(MSBuildThisFileDirectory)LoggingService.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)EnumerableExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Catalog\Album.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Catalog\Artist.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Catalog\Catalog.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Catalog\Track.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)UdpBroadcast.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Messages.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IScrobbler.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)PlayQueue.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IStreamingPlayer.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ProgressMonitors\ScrobblingMonitor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ProgressMonitors\ProgressMonitorGroup.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ProgressMonitors\ITrackMonitor.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)TaskExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)INetworkChangedListener.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)NullNetworkChangedListener.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)ServerDetails.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)Files.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="$(MSBuildThisFileDirectory)Catalog\" />
+    <Folder Include="$(MSBuildThisFileDirectory)ProgressMonitors\" />
+  </ItemGroup>
+</Project>

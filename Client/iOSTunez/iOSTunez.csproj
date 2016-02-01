@@ -1,0 +1,191 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">iPhoneSimulator</Platform>
+    <ProjectGuid>{DD34D43F-A95A-4046-94E5-3601DB77E211}</ProjectGuid>
+    <ProjectTypeGuids>{FEACFBD2-3405-455C-9665-78FE426C6842};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <OutputType>Exe</OutputType>
+    <RootNamespace>iOSTunez</RootNamespace>
+    <AssemblyName>iOSTunez</AssemblyName>
+    <IPhoneResourcePrefix>Resources</IPhoneResourcePrefix>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhoneSimulator' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\iPhoneSimulator\Debug</OutputPath>
+    <DefineConstants>DEBUG;ENABLE_TEST_CLOUD;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <CodesignKey>iPhone Developer</CodesignKey>
+    <MtouchDebug>true</MtouchDebug>
+    <MtouchFastDev>true</MtouchFastDev>
+    <MtouchProfiling>true</MtouchProfiling>
+    <MtouchUseSGen>true</MtouchUseSGen>
+    <MtouchUseRefCounting>true</MtouchUseRefCounting>
+    <MtouchLink>None</MtouchLink>
+    <MtouchArch>i386</MtouchArch>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhone' ">
+    <Optimize>true</Optimize>
+    <OutputPath>bin\iPhone\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <CodesignKey>iPhone Developer</CodesignKey>
+    <MtouchUseSGen>true</MtouchUseSGen>
+    <MtouchUseRefCounting>true</MtouchUseRefCounting>
+    <MtouchFloat32>true</MtouchFloat32>
+    <CodesignEntitlements>Entitlements.plist</CodesignEntitlements>
+    <MtouchArch>ARMv7, ARM64</MtouchArch>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|iPhoneSimulator' ">
+    <Optimize>true</Optimize>
+    <OutputPath>bin\iPhoneSimulator\Release</OutputPath>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <CodesignKey>iPhone Developer</CodesignKey>
+    <MtouchUseSGen>true</MtouchUseSGen>
+    <MtouchUseRefCounting>true</MtouchUseRefCounting>
+    <MtouchLink>None</MtouchLink>
+    <MtouchArch>i386</MtouchArch>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|iPhone' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\iPhone\Debug</OutputPath>
+    <DefineConstants>DEBUG;ENABLE_TEST_CLOUD;</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+    <ConsolePause>false</ConsolePause>
+    <CodesignKey>iPhone Developer: alan.mcgovern@gmail.com (L74N35P83B)</CodesignKey>
+    <DeviceSpecificBuild>true</DeviceSpecificBuild>
+    <MtouchDebug>true</MtouchDebug>
+    <MtouchFastDev>true</MtouchFastDev>
+    <MtouchProfiling>true</MtouchProfiling>
+    <MtouchUseSGen>true</MtouchUseSGen>
+    <MtouchUseRefCounting>true</MtouchUseRefCounting>
+    <MtouchFloat32>true</MtouchFloat32>
+    <MtouchLink>None</MtouchLink>
+    <MtouchArch>ARMv7, ARM64</MtouchArch>
+    <MtouchHttpClientHandler>NSUrlSessionHandler</MtouchHttpClientHandler>
+    <MtouchTlsProvider>AppleTLS</MtouchTlsProvider>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="System" />
+    <Reference Include="System.Xml" />
+    <Reference Include="System.Core" />
+    <Reference Include="Xamarin.iOS" />
+    <Reference Include="System.Net.Http" />
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\..\packages\Newtonsoft.Json.7.0.1\lib\portable-net40+sl5+wp80+win8+wpa81\Newtonsoft.Json.dll</HintPath>
+    </Reference>
+  </ItemGroup>
+  <ItemGroup>
+    <ImageAsset Include="Assets.xcassets\AppIcons.appiconset\Contents.json" />
+    <ImageAsset Include="Assets.xcassets\Contents.json" />
+  </ItemGroup>
+  <ItemGroup>
+    <InterfaceDefinition Include="Resources\LaunchScreen.xib" />
+    <InterfaceDefinition Include="Main.storyboard" />
+    <InterfaceDefinition Include="Views\NowPlayingStatusView.xib" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="Info.plist" />
+    <None Include="Entitlements.plist" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Main.cs" />
+    <Compile Include="AppDelegate.cs" />
+    <Compile Include="ViewController.cs" />
+    <Compile Include="ViewController.designer.cs">
+      <DependentUpon>ViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ViewControllers\LastFMLoginController.cs" />
+    <Compile Include="ViewControllers\LastFMLoginController.designer.cs">
+      <DependentUpon>LastFMLoginController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ViewControllers\NowPlayingViewController.cs" />
+    <Compile Include="ViewControllers\NowPlayingViewController.designer.cs">
+      <DependentUpon>NowPlayingViewController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\NowPlayingStatusView.cs" />
+    <Compile Include="Views\NowPlayingStatusView.designer.cs">
+      <DependentUpon>NowPlayingStatusView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ViewControllers\TableViewControllerWithPlayQueue.cs" />
+    <Compile Include="ViewControllers\TracksView.cs" />
+    <Compile Include="ViewControllers\TracksView.designer.cs">
+      <DependentUpon>TracksView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\TrackCell.cs" />
+    <Compile Include="Views\TrackCell.designer.cs">
+      <DependentUpon>TrackCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ViewControllers\CatalogController.cs" />
+    <Compile Include="ViewControllers\CatalogController.designer.cs">
+      <DependentUpon>CatalogController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ViewControllers\ArtistsView.cs" />
+    <Compile Include="ViewControllers\ArtistsView.designer.cs">
+      <DependentUpon>ArtistsView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\ArtistCell.cs" />
+    <Compile Include="Views\ArtistCell.designer.cs">
+      <DependentUpon>ArtistCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ViewControllers\AlbumsView.cs" />
+    <Compile Include="ViewControllers\AlbumsView.designer.cs">
+      <DependentUpon>AlbumsView.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Views\AlbumCell.cs" />
+    <Compile Include="Views\AlbumCell.designer.cs">
+      <DependentUpon>AlbumCell.cs</DependentUpon>
+    </Compile>
+    <Compile Include="ViewControllers\NavigationMenuController.cs" />
+    <Compile Include="ViewControllers\NavigationMenuController.designer.cs">
+      <DependentUpon>NavigationMenuController.cs</DependentUpon>
+    </Compile>
+    <Compile Include="NowPlayingMonitor.cs" />
+    <Compile Include="ExtensionMethods.cs" />
+    <Compile Include="NetworkChangedListener.cs" />
+    <Compile Include="ViewControllers\SelectServerViewController.cs" />
+    <Compile Include="ViewControllers\SelectServerViewController.designer.cs" />
+    <Compile Include="Views\ServerTableView.cs" />
+    <Compile Include="Views\ServerTableView.designer.cs" />
+    <Compile Include="ViewControllers\ConnectingViewController.cs" />
+    <Compile Include="ViewControllers\ConnectingViewController.designer.cs" />
+    <Compile Include="ViewControllers\ContentViewController.cs" />
+    <Compile Include="AudioRouteMonitor.cs" />
+    <Compile Include="Views\ServerCell.cs" />
+    <Compile Include="Views\ServerCell.designer.cs" />
+    <Compile Include="Storyboard.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\external\sidebar\Xamarin-Sidebar-Unified\Xamarin-Sidebar-Unified.csproj">
+      <Project>{72600F4A-51F2-4E93-8688-8198DE0F8EF4}</Project>
+      <Name>Xamarin-Sidebar-Unified</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\..\external\modernhttpclient\src\ModernHttpClient\ModernHttpClient.iOS64.csproj">
+      <Project>{6941F069-AC02-40EE-BBF3-9FE3331030EF}</Project>
+      <Name>ModernHttpClient.iOS64</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="ViewControllers\" />
+    <Folder Include="Views\" />
+  </ItemGroup>
+  <ItemGroup>
+    <BundleResource Include="Resources\lastfm_logo.jpg" />
+    <BundleResource Include="Resources\Pause.png" />
+    <BundleResource Include="Resources\Play.png" />
+  </ItemGroup>
+  <Import Project="..\..\Shared\TunezCore\TunezCore.projitems" Label="Shared" />
+  <Import Project="..\TunezClientCore\TunezClientCore.projitems" Label="Shared" />
+  <Import Project="$(MSBuildExtensionsPath)\Xamarin\iOS\Xamarin.iOS.CSharp.targets" />
+  <Import Project="..\..\lastfm.targets" />
+</Project>

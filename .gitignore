@@ -1,0 +1,13 @@
+.DS_Store
+/Client/MacTunez/bin/
+/Client/MacTunez/obj/
+/Client/iOSTunez/bin/
+/Client/iOSTunez/obj/
+/Tunez.userprefs
+/Retagger/bin/
+/Retagger/obj/
+/Server/TunezServer.Tests/bin/
+/Server/TunezServer.Tests/obj/
+/Server/TunezServer/bin/
+/Server/TunezServer/obj/
+/packages/
