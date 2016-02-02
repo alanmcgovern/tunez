@@ -43,7 +43,7 @@ namespace Tunez
 		async Task<Catalog> FetchCatalog (string cachedCatalogPath, Catalog cachedCatalog, CancellationToken token)
 		{
 			var start = DateTime.UtcNow;
-			using (var client = new HttpClient ()) {
+			using (var client = new HttpClient (new ModernHttpClient.NativeMessageHandler ())) {
 				var message = Newtonsoft.Json.JsonConvert.SerializeObject (new FetchCatalogMessage { UUID = (cachedCatalog?.UUID).GetValueOrDefault (-1) });
 
 				var response = await client.PostAsync (ServerDetails.FullAddress, new StringContent (Messages.FetchGzipCompressedCatalog + message, Encoding.UTF8), token);

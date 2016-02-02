@@ -256,7 +256,7 @@ namespace Tunez
 
 		async Task<JObject> PostAsync (Uri uri, HttpContent content = null)
 		{
-			using (var client = new HttpClient ()) {
+			using (var client = new HttpClient (new ModernHttpClient.NativeMessageHandler ())) {
 				client.DefaultRequestHeaders.Add ("User-Agent", "Tunez 1.0");
 				var response = await client.PostAsync (uri, content);
 				var responseString = await response.Content.ReadAsStringAsync ();
