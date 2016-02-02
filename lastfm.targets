@@ -4,6 +4,11 @@
     <LastFM Condition="'$(LastFM)' == ''">$([MSBuild]::GetDirectoryNameOfFileAbove($(MSBuildProjectDirectory), lastfm.cs))\lastfm.cs</LastFM>
   </PropertyGroup>  
   <ItemGroup>
-      <Compile Include="$(LastFM)" Condition="'$(LastFM)' != ''" />
+      <Compile Include="$(LastFM)" Condition="'$(LastFM)' != '\lastfm.cs'">
+        <Link>LastFM.cs</Link>
+      </Compile>
+      <Compile Include="..\DummyLastFMCredentials.cs" Condition="'$(LastFM)' == '\lastfm.cs'">
+        <Link>LastFM.cs</Link>
+      </Compile>
   </ItemGroup>
 </Project>

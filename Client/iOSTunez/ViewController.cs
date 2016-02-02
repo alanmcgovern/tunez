@@ -21,7 +21,7 @@ namespace iOSTunez
 			get; set;
 		}
 
-		TrackMonitor Monitors {
+		TrackMonitorGroup Monitors {
 			get; set;
 		}
 
@@ -54,23 +54,30 @@ namespace iOSTunez
 				MenuLocation = SidebarNavigation.MenuLocations.Left
 			};
 
-			Scrobbler = new Scrobbler (Caches.Scrobbler);
 			NowPlayingStatusView = NowPlayingStatusView.Create ();
 
 			Monitors = new TrackMonitorGroup {
 				new NowPlayingMonitor (View, SidebarController.View, NowPlayingStatusView),
-				new ScrobblingMonitor (Scrobbler)
 			};
+			if (!string.IsNullOrEmpty (LastFMAppCredentials.APIKey)) {
+				Scrobbler = new Scrobbler (Caches.Scrobbler);
+				Monitors.Add (new ScrobblingMonitor (Scrobbler));
+			}
 
 			NowPlayingStatusView.PlayPausePressed += (o, e) => CatalogController.PlayQueue.IsPaused = !CatalogController.PlayQueue.IsPaused;
 			menuController.CatalogSelected += (o, e) => {
 				SidebarController.CloseMenu (true);
 				ContentViewController.Content = CatalogController;
 			};
-			menuController.LastFmSelected += (o, e) => {
-				SidebarController.CloseMenu (true);
-				ContentViewController.Content = StoryboardHelper.Main.CreateLastFMLoginController (Scrobbler);
-			};
+			if (Scrobbler == null) {
+				menuController.LastFMSupported = false;
+			} else {
+				menuController.LastFMSupported = true;
+				menuController.LastFmSelected += (o, e) => {
+					SidebarController.CloseMenu (true);
+					ContentViewController.Content = StoryboardHelper.Main.CreateLastFMLoginController (Scrobbler);
+				};
+			}
 			menuController.SelectServerSelected += (o, e) => {
 				SidebarController.CloseMenu (true);
 				ChangeServerAsync ();

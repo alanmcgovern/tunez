@@ -17,8 +17,25 @@ namespace iOSTunez
 		public event EventHandler LastFmSelected;
 		public event EventHandler SelectServerSelected;
 
+		bool lastFMSupported;
+		public bool LastFMSupported {
+			get { return lastFMSupported; }
+			set {
+				lastFMSupported = value;
+				if (lastFMButton != null)
+					lastFMButton.Hidden = !value;
+			}
+		}
+
 		public NavigationMenuController (IntPtr handle) : base (handle)
 		{
+		}
+
+		public override void ViewDidLoad()
+		{
+			// Ensure our view is updated with the correct value
+			LastFMSupported = lastFMSupported;
+			base.ViewDidLoad();
 		}
 
 		partial void CatalogButton_TouchUpInside(UIButton sender)

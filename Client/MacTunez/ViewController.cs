@@ -53,8 +53,10 @@ namespace MacTunez
 			var label = (NSTextField)NSApplication.SharedApplication.Windows[0].Toolbar.Items[2].View;
 			var monitors = new TrackMonitorGroup {
 				new PlayingProgressMonitor (progress, label),
-				new ScrobblingMonitor (new Scrobbler ("/Users/alan"))
 			};
+			if (!string.IsNullOrEmpty (LastFMAppCredentials.APIKey))
+				monitors.Add (new ScrobblingMonitor (new Scrobbler (Caches.Scrobbler)));
+
 			playQueue = new PlayQueue<MacStreamingPlayer> (server, new NullNetworkChangedListener (), monitors);
 
 			PlayPauseButton (playPauseItem, playPauseButton);
