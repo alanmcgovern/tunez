@@ -37,6 +37,7 @@
     <Compile Include="ConsoleSyncContext.cs" />
     <Compile Include="Main.cs" />
     <Compile Include="RequestHandler.cs" />
+    <Compile Include="Caches.cs" />
   </ItemGroup>
   <Import Project="..\..\Shared\TunezCore\TunezCore.projitems" Label="Shared" />
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

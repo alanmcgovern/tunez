@@ -51,8 +51,8 @@ namespace Tunez
 		[Test]
 		public async Task FetchLargeCatalog ()
 		{
-			Catalog = CatalogHelpers.Create (100, 10, 10);
-			ListenTask = Handler.BeginListeningAsync (Catalog, Cancellation.Token);
+			Handler.Catalog = Catalog = CatalogHelpers.Create (100, 10, 10);
+			ListenTask = Handler.BeginListeningAsync (Cancellation.Token);
 			var json = await FetchCatalogJson ();
 			Assert.AreEqual (Catalog.ToJson (), json, "#1");
 
@@ -62,8 +62,8 @@ namespace Tunez
 		//[Ignore ("MonoBug: Calling webrequest.abort can fail in many strange and unpredictable ways. Internal state gets screwed up and EndGetResponse can throw many types of exception, such as ObjectDisposed exceptions when a WebException is expected")]
 		public async Task FetchLargeCatalog_AbortBeforeResponse ()
 		{
-			Catalog = CatalogHelpers.Create (100, 10, 10);
-			ListenTask = Handler.BeginListeningAsync (Catalog, Cancellation.Token);
+			Handler.Catalog = Catalog = CatalogHelpers.Create (100, 10, 10);
+			ListenTask = Handler.BeginListeningAsync (Cancellation.Token);
 
 			for (int i = 0; i < 100; i ++) {
 				var client = WebRequest.CreateHttp (ServerAddress);

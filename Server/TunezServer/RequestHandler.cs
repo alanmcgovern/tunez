@@ -10,11 +10,15 @@ namespace Tunez
 {
 	public class RequestHandler
 	{
+		public Catalog Catalog {
+			get; set;
+		}
+
 		public int ListenPort {
 			get { return 51986; }
 		}
 
-		public async Task BeginListeningAsync (Catalog catalog, CancellationToken token)
+		public async Task BeginListeningAsync (CancellationToken token)
 		{
 			var listener = new HttpListener ();
 			listener.Prefixes.Add (string.Format ("http://*:{0}/", ListenPort));
@@ -25,7 +29,7 @@ namespace Tunez
 					listener.Start ();
 					while (!token.IsCancellationRequested) {
 						var context = await listener.GetContextAsync ().ConfigureAwait (false);
-						ContextReceived (catalog, context, token);
+						ContextReceived (Catalog, context, token);
 					}
 				}
 			} catch (ObjectDisposedException ex) {

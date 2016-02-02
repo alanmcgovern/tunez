@@ -1,7 +1,8 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Threading;
-using Tunez;
 
 namespace Tunez
 {
@@ -18,7 +19,7 @@ namespace Tunez
 			Task.Run (() => context.Run ());
 			Task initTask = null;
 
-			context.Post (() => initTask = Initialize (cts.Token));
+			context.Send (() => initTask = Initialize (cts.Token));
 			while (true) {
 				PrintCommands ();
 				var command = Console.ReadLine ();
@@ -29,24 +30,25 @@ namespace Tunez
 					context.Exit ();
 					Environment.Exit (0);
 				} else {
-					context.Send (t => HandleKeyPress (command), null);
+					Task handleTask = null;
+					context.Send (t => handleTask = HandleKeyPress (command, cts.Token), null);
+					handleTask.WaitOrCanceled ().Wait ();
 				}
 			}
 		}
 
 		static async Task Initialize (CancellationToken token)
 		{
-			Progress<float> loader = new Progress<float> ();
-			loader.ProgressChanged += (sender, e) => LoggingService.LogInfo ("Progress: {0:P}", e);
-			LoggingService.LogInfo ("Preparing the music catalog...");
-			await Task.Run (() => catalog = new Catalog (TrackLoader.Load ("/Users/alan/MusicStream", loader, token)));
+			var catalog = await LoadCatalog (token);
 
-			handler = new RequestHandler ();
+			handler = new RequestHandler {
+				Catalog = catalog
+			};
 			announcer = new UdpBroadcast ();
 
 			try {
 				await Task.WhenAll (new [] {
-					handler.BeginListeningAsync (catalog, token),
+					handler.BeginListeningAsync (token),
 					announcer.BeginAnnouncingAsync (handler.ListenPort, token)
 				});
 			} catch (OperationCanceledException) {
@@ -54,13 +56,48 @@ namespace Tunez
 			}
 		}
 
-		static void HandleKeyPress (string command)
+		static async Task HandleKeyPress (string command, CancellationToken token)
 		{
+			if (command.StartsWith ("add", StringComparison.Ordinal)) {
+				var paths = Caches.GetTrackLoaderPaths ();
+				if (paths.Add (command.Substring ("add ".Length))) {
+					Caches.StoreTrackLoaderPaths (paths);
+					handler.Catalog = await LoadCatalog (token);
+				}
+			} else if (command.StartsWith ("remove", StringComparison.Ordinal)) {
+				var paths = Caches.GetTrackLoaderPaths ();
+				if (paths.Remove (command.Substring ("remove ".Length))) {
+					Caches.StoreTrackLoaderPaths (paths);
+					handler.Catalog = await LoadCatalog (token);
+				}
+			}
+		}
+
+		static async Task<Catalog> LoadCatalog (CancellationToken token)
+		{
+			var paths = Caches.GetTrackLoaderPaths ();
+			if (!paths.Any ())
+				return new Catalog ();
+
+			LoggingService.LogInfo ("Preparing the music catalog...");
+			LoggingService.LogInfo ("Loading music from:");
+			foreach (var path in paths)
+				LoggingService.LogInfo ("\t{0}", path);
+
+			List<Track> tracks = new List<Track> ();
+			foreach (var path in paths) {
+				var loader = new Progress<float> ();
+				loader.ProgressChanged += (sender, e) => LoggingService.LogInfo ("Progress: {0:P} for path {1}", e, path);
+				await Task.Run (() => tracks.AddRange (TrackLoader.Load (path, loader, token)));
+			}
+			return new Catalog (tracks);
 		}
 
 		static void PrintCommands ()
 		{
 			Console.Write (@"
+Type 'add <path>' to recursively scan for mp3s to add to the catalog.
+Type 'remove <path>' to remove a path from the catalog.
 Press 'q' to quit.
 $ ");
 		}
