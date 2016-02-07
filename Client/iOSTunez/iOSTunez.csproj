@@ -164,6 +164,7 @@
     <Compile Include="Views\ServerCell.cs" />
     <Compile Include="Views\ServerCell.designer.cs" />
     <Compile Include="Storyboard.cs" />
+    <Compile Include="BufferingManager.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\external\sidebar\Xamarin-Sidebar-Unified\Xamarin-Sidebar-Unified.csproj">

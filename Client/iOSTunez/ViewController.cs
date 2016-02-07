@@ -13,6 +13,10 @@ namespace iOSTunez
 {
 	public partial class ViewController : UIViewController
 	{
+		BufferingManager BufferingManager {
+			get; set;
+		}
+
 		CatalogController CatalogController {
 			get; set;
 		}
@@ -133,6 +137,8 @@ namespace iOSTunez
 				playQueue.Playing += () => NowPlayingStatusView.IsPaused = false;
 				playQueue.BufferingStarted += () => NowPlayingStatusView.IsBuffering = true;
 				playQueue.BufferingCompleted += () => NowPlayingStatusView.IsBuffering = false;
+
+				BufferingManager = new BufferingManager (playQueue, token);
 				Monitors.Initialize (null);
 
 				if (CatalogController != null)
