@@ -44,12 +44,15 @@ namespace iOSTunez
 			backgroundTask = task;
 		}
 
-		void BufferingCompleted ()
+		async void BufferingCompleted ()
 		{
 			if (backgroundTask.HasValue) {
-				LoggingService.LogInfo ("Ended background task '{0}'", backgroundTask.Value);
-				UIApplication.SharedApplication.EndBackgroundTask (backgroundTask.Value);
+				var task = backgroundTask.Value;
 				backgroundTask = null;
+
+				await Task.Delay (TimeSpan.FromSeconds (10));
+				LoggingService.LogInfo ("Ended background task '{0}'", task);
+				UIApplication.SharedApplication.EndBackgroundTask (task);
 			}
 		}
 	}
