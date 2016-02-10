@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Threading;
@@ -87,7 +88,7 @@ namespace Tunez
 				LoggingService.LogInfo ("\t{0}", path);
 
 			List<Track> tracks = new List<Track> ();
-			foreach (var path in paths) {
+			foreach (var path in paths.Where (Directory.Exists)) {
 				var loader = new Progress<float> ();
 				loader.ProgressChanged += (sender, e) => LoggingService.LogInfo ("Progress: {0:P} for path {1}", e, path);
 				await Task.Run (() => tracks.AddRange (TrackLoader.Load (path, loader, token)));
