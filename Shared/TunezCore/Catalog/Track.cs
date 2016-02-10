@@ -5,7 +5,7 @@ using System.Collections.Generic;
 namespace Tunez
 {
 	[Newtonsoft.Json.JsonObject]
-	public class Track : IEnumerable<Track>
+	public class Track
 	{
 		/// <summary>
 		/// The name of the album the track belongs to
@@ -105,16 +105,6 @@ namespace Tunez
 		public override string ToString()
 		{
 			return string.Format("[Track: Album={0}, AlbumArtist={1}, Number={2}, Name={3}, MusicBrainzId={4}, TrackArtist={5}]", Album, AlbumArtist, Number, Name, MusicBrainzId, TrackArtist);
-		}
-
-		IEnumerator<Track> IEnumerable<Track>.GetEnumerator ()
-		{
-			yield return this;
-		}
-
-		IEnumerator IEnumerable.GetEnumerator ()
-		{
-			return ((IEnumerable<Track>) this).GetEnumerator ();
 		}
 	}
 }

@@ -24,8 +24,7 @@ namespace Tunez
 		IEnumerator<Track> IEnumerable<Track>.GetEnumerator ()
 		{
 			foreach (var track in Tracks)
-				foreach (var item in track)
-					yield return item;
+				yield return track;
 		}
 
 		IEnumerator IEnumerable.GetEnumerator ()

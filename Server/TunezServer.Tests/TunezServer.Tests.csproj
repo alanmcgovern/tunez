@@ -36,6 +36,8 @@
     <Compile Include="Asserts.cs" />
     <Compile Include="EnumerableExtensionsTests.cs" />
     <Compile Include="CatalogHelpers.cs" />
+    <Compile Include="CatalogTests.cs" />
+    <Compile Include="TestHelpers.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\..\..\monodevelop\main\external\guiunit\src\framework\GuiUnit_NET_4_5.csproj">
