@@ -35,7 +35,6 @@
     <Compile Include="UdpBroadcastTests.cs" />
     <Compile Include="Asserts.cs" />
     <Compile Include="EnumerableExtensionsTests.cs" />
-    <Compile Include="RequestHandlerTests.cs" />
     <Compile Include="CatalogHelpers.cs" />
   </ItemGroup>
   <ItemGroup>
