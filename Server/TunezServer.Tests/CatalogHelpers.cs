@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using Tunez;
 
-namespace TunezServer.Tests
+namespace TunezServer
 {
 	public static class CatalogHelpers
 	{

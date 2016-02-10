@@ -1,8 +1,9 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using NUnit.Framework;
 using Tunez;
 
-namespace Tunez
+namespace TunezServer
 {
 	[TestFixture]
 	public class EnumerableExtensionsTests

@@ -3,7 +3,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using NUnit.Framework;
 
-namespace TunezServer.Tests
+ namespace TunezServer
 {
 	public static class Asserts
 	{

@@ -5,7 +5,7 @@
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
     <ProjectGuid>{4C178FFE-46F4-41FB-AB40-02CB2A3829CC}</ProjectGuid>
     <OutputType>Library</OutputType>
-    <RootNamespace>TunezServer.Tests</RootNamespace>
+    <RootNamespace>TunezServer</RootNamespace>
     <AssemblyName>TunezServer.Tests</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
   </PropertyGroup>
