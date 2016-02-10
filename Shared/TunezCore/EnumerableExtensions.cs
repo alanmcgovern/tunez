@@ -6,6 +6,11 @@ namespace Tunez
 {
 	public static class EnumerableExtensions
 	{
+		public static IEnumerable<T> Flatten<T> (this IEnumerable<IEnumerable<T>> enumerable)
+		{
+			return enumerable.SelectMany (t => t);
+		}
+
 		public static IEnumerable<T> Randomize<T> (this IEnumerable<T> enumerable)
 		{
 			Random random = new Random ();

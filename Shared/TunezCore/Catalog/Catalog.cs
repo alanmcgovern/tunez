@@ -106,8 +106,6 @@ namespace Tunez
 		static Artist ToArtist (IGrouping<string, Track> artistData)
 		{
 			var albums = artistData
-				.GroupBy (t => t.Disc)
-				.SelectMany (t => t)
 				.GroupBy (t => t.Album)
 				.Select (ToAlbum)
 				.OrderBy (t => t.Name)
@@ -121,8 +119,16 @@ namespace Tunez
 
 		static Album ToAlbum (IGrouping<string, Track> albumData)
 		{
+			// 1) Group the tracks in this album by disc number
+			// 2) Sort it so the discs are in numerical order
+			// 3) Sort the contents of each disc so the tracks are ordered by track number
+			// 4) Flatten out the groups into a single IEnumerable<Track> again
+			// 5) Make it an array!
 			var tracks = albumData
-				.OrderBy (t => t.Number)
+				.GroupBy (t => t.Disc)
+				.OrderBy (t => t.Key)
+				.Select (t => t.OrderBy (track => track.Number))
+				.Flatten ()
 				.ToArray ();
 
 			return new Album {
