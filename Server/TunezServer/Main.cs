@@ -76,8 +76,10 @@ namespace Tunez
 		static async Task<Catalog> LoadCatalog (CancellationToken token)
 		{
 			var paths = Caches.GetTrackLoaderPaths ();
-			if (!paths.Any ())
+			if (!paths.Any ()) {
+				LoggingService.LogInfo ("You need to add some search paths to load MP3s from");
 				return new Catalog ();
+			}
 
 			LoggingService.LogInfo ("Preparing the music catalog...");
 			LoggingService.LogInfo ("Loading music from:");
