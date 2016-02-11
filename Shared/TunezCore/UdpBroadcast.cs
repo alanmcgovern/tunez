@@ -66,7 +66,7 @@ namespace Tunez
 				} catch (ObjectDisposedException) {
 					token.ThrowIfCancellationRequested ();
 					throw;
-				} catch (SocketException e) {
+				} catch (SocketException) {
 					token.ThrowIfCancellationRequested ();
 					// Ignore this
 				} catch (Exception ex) {
