@@ -10,7 +10,6 @@ namespace Tunez
 	class MainClass
 	{
 		static UdpBroadcast announcer;
-		static Catalog catalog;
 		static RequestHandler handler;
 
 		public static void Main (string[] args)
@@ -87,12 +86,9 @@ namespace Tunez
 			foreach (var path in paths)
 				LoggingService.LogInfo ("\t{0}", path);
 
-			List<Track> tracks = new List<Track> ();
-			foreach (var path in paths.Where (Directory.Exists)) {
-				var loader = new Progress<float> ();
-				loader.ProgressChanged += (sender, e) => LoggingService.LogInfo ("Progress: {0:P} for path {1}", e, path);
-				await Task.Run (() => tracks.AddRange (TrackLoader.Load (path, loader, token)));
-			}
+			var loader = new Progress<float> ();
+			loader.ProgressChanged += (sender, e) => LoggingService.LogInfo ("Progress: {0:P}");
+			var tracks = await Task.Run (() => (TrackLoader.Load (paths, loader, token)));
 			return new Catalog (tracks);
 		}
 
