@@ -37,7 +37,6 @@ namespace Tunez
 						results.Add (new Track {
 							Album = file.Tag.Album,
 							AlbumArtist = file.Tag.FirstAlbumArtist,
-							AlbumArtistSortOrder = file.Tag.FirstAlbumArtistSort,
 							Disc = (int) file.Tag.Disc,
 							Duration = (int)file.Properties.Duration.TotalSeconds,
 							FilePath = filePath,
@@ -46,7 +45,6 @@ namespace Tunez
 							Name = file.Tag.Title,
 							Number = (int)file.Tag.Track,
 							TrackArtist = file.Tag.FirstPerformer,
-							TrackArtistSortOrder = file.Tag.FirstPerformerSort,
 							UUID = uuid++
 						});
 					}
