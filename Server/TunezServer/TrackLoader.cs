@@ -42,7 +42,6 @@ namespace Tunez
 			int uuid = 0;
 			var results = new List<Track> ();
 			foreach (var filePath in filePaths) {
-				LoggingService.LogInfo ("Loading from: {0}", filePath);
 				token.ThrowIfCancellationRequested ();
 				try {
 					using (var file = TagLib.File.Create (filePath)) {
