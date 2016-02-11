@@ -24,6 +24,10 @@ namespace Tunez
 			get; set;
 		}
 
+		public string AlbumArtistSortOrder {
+			get; set;
+		}
+
 		/// <summary>
 		/// If this track is part of a multi-disc album, this is the disc the track belongs to
 		/// </summary>
@@ -87,6 +91,10 @@ namespace Tunez
 		/// </summary>
 		/// <value>The artist.</value>
 		public string TrackArtist {
+			get; set;
+		}
+
+		public string TrackArtistSortOrder {
 			get; set;
 		}
 

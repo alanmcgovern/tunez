@@ -48,7 +48,7 @@ namespace Tunez
 			Artists = tracks
 				.GroupBy (t => t.AlbumArtist ?? t.TrackArtist)
 				.Select (ToArtist)
-				.OrderBy (t => t.Name)
+				.OrderBy (t => t.SortKey)
 				.ToArray ();
 			UUID = DateTime.Now.Ticks;
 		}

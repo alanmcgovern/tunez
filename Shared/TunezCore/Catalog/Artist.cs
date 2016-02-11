@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Tunez
 {
@@ -19,7 +20,10 @@ namespace Tunez
 		}
 
 		public string SortKey {
-			get { return Name; }
+			get {
+				var track = Albums.FirstOrDefault ()?.Tracks.FirstOrDefault ();
+				return track?.AlbumArtistSortOrder ?? track?.TrackArtistSortOrder ?? Name;
+			}
 		}
 
 		public Artist()
