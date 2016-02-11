@@ -7,6 +7,8 @@ namespace Tunez
 	[Newtonsoft.Json.JsonObject]
 	public class Artist : IEnumerable<Track>
 	{
+		const string The = "The ";
+
 		public Album[] Albums {
 			get; set;
 		}
@@ -19,7 +21,11 @@ namespace Tunez
 		}
 
 		public string SortKey {
-			get { return Name; }
+			get {
+				if (Name.StartsWith (The, StringComparison.OrdinalIgnoreCase) && !Name.Equals (The, StringComparison.OrdinalIgnoreCase))
+					return Name.Substring (The.Length);
+				return Name;
+			}
 		}
 
 		public Artist()

@@ -15,6 +15,21 @@ namespace TunezServer
 		{
 			UUID = 0;
 		}
+
+		[Test]
+		public void ArtistSortOrder_The ()
+		{
+			var tracks = new Track [] {
+				BasicTrack (albumArtist: "A", trackArtist: "A"),
+				BasicTrack (albumArtist: "The B", trackArtist: "The B"),
+				BasicTrack (albumArtist: "C", trackArtist: "C"),
+			};
+			var catalog = new Catalog (tracks);
+			Assert.AreEqual ("A", catalog.Artists [0].Name);
+			Assert.AreEqual ("The B", catalog.Artists [1].Name);
+			Assert.AreEqual ("C", catalog.Artists [2].Name);
+		}
+
 		[Test]
 		public void MultiDisc ()
 		{
@@ -36,11 +51,11 @@ namespace TunezServer
 		}
 
 
-		Track BasicTrack (string name = null, int? disc = null, int? track = null)
+		Track BasicTrack (string name = null, int? disc = null, int? track = null, string trackArtist = null, string albumArtist = null)
 		{
 			return new Track {
 				Album = "Album",
-				AlbumArtist = "Album Artist",
+				AlbumArtist = albumArtist ?? "Album Artist",
 				Disc = disc.GetValueOrDefault (1),
 				Duration = 1000,
 				FilePath = "File/Path/" + UUID,
@@ -48,7 +63,7 @@ namespace TunezServer
 				MusicBrainzId = "SomeMusicBrainzId",
 				Name =  name ?? "Name",
 				Number = track.GetValueOrDefault (1),
-				TrackArtist = "Track Artist",
+				TrackArtist = trackArtist ?? "Track Artist",
 				UUID = UUID ++
 			};
 		}
