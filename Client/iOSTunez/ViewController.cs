@@ -100,9 +100,11 @@ namespace iOSTunez
 		{
 			using (var monitor = new AudioRouteMonitor ()) {
 				try {
-					await monitor.AudioRouteChanged;
-					if (CatalogController != null)
-						CatalogController.PlayQueue.IsPaused = true;
+					while (true) {
+						await monitor.AudioRouteChanged;
+						if (CatalogController != null)
+							CatalogController.PlayQueue.IsPaused = true;
+					}
 				} catch (OperationCanceledException) {
 					
 				}
