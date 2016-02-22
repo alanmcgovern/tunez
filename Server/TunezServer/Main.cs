@@ -87,7 +87,7 @@ namespace Tunez
 				LoggingService.LogInfo ("\t{0}", path);
 
 			var loader = new Progress<float> ();
-			loader.ProgressChanged += (sender, e) => LoggingService.LogInfo ("Progress: {0:P}");
+			loader.ProgressChanged += (sender, e) => LoggingService.LogInfo ("Progress: {0:P}", e);
 			var tracks = await Task.Run (() => (TrackLoader.Load (paths, loader, token)));
 			return new Catalog (tracks);
 		}
