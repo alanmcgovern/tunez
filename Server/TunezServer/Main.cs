@@ -23,6 +23,8 @@ namespace Tunez
 			while (true) {
 				PrintCommands ();
 				var command = Console.ReadLine ();
+				if (command == null)
+					continue;
 				Console.Clear ();
 				if (command == "q") {
 					cts.Cancel ();
