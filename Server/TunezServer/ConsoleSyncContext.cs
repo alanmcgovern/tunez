@@ -14,11 +14,6 @@ namespace Tunez
 			queue.Add (() => d (state));
 		}
 
-		public void Send (Action action)
-		{
-			Send (d => action (), null);
-		}
-
 		public override void Send (SendOrPostCallback d, object state)
 		{
 			Exception ex = null;
