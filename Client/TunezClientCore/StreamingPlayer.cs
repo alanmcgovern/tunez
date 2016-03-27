@@ -54,7 +54,7 @@ namespace Tunez
 			set {
 				if (buffering != value) {
 					buffering = value;
-					syncContext.Post (() => {
+					syncContext.Send (() => {
 						if (value)
 							BufferingStarted ();
 						else
