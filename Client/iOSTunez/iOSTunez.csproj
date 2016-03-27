@@ -186,6 +186,7 @@
     <BundleResource Include="Resources\lastfm_logo.jpg" />
     <BundleResource Include="Resources\Pause.png" />
     <BundleResource Include="Resources\Play.png" />
+    <BundleResource Include="empty.mp3" />
   </ItemGroup>
   <Import Project="..\..\Shared\TunezCore\TunezCore.projitems" Label="Shared" />
   <Import Project="..\TunezClientCore\TunezClientCore.projitems" Label="Shared" />
