@@ -95,7 +95,9 @@ namespace Tunez
 			var messageLengthHeader = new byte [4];
 			await EnsureRead (socket, messageLengthHeader);
 
+			LoggingService.LogInfo ("Received a header of {0}-{1}-{2}-{3}", messageLengthHeader [0], messageLengthHeader [1], messageLengthHeader [2],messageLengthHeader [3]);
 			var messageLength = IPAddress.NetworkToHostOrder (BitConverter.ToInt32 (messageLengthHeader, 0));
+			LoggingService.LogInfo ("MesssageLength was {0}", messageLength);
 			var message = new byte [messageLength];
 			await EnsureRead (socket, message);
 
