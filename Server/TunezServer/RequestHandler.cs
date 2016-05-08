@@ -31,7 +31,7 @@ namespace Tunez
 
 				await Task.WhenAll (
 					BeginListeningAsync (tcp6Listener, token),
-					BeginListeningAsync (tcpListener, token),
+					BeginListeningAsync (tcpListener, token)
 				).ConfigureAwait (false);
 			}
 		}
@@ -79,6 +79,7 @@ namespace Tunez
 
 				using (var responseStream = HandleRequest (request, catalog)) {
 					var responseLength = responseStream.Length - responseStream.Position;
+					LoggingService.LogInfo ("Sending a response of length: {0}", responseLength);
 					await EnsureWrite (socket, BitConverter.GetBytes (IPAddress.HostToNetworkOrder (responseLength)));
 					using (var outStream =  new NetworkStream (socket, true))
 						await responseStream.CopyToAsync (outStream, 4096, token).ConfigureAwait (false);
@@ -117,8 +118,10 @@ namespace Tunez
 				return new MemoryStream (catalog.ToJson ());
 			} else if (request.StartsWith (Messages.FetchGzipCompressedCatalog)) {
 				var message = Newtonsoft.Json.JsonConvert.DeserializeObject<FetchCatalogMessage> (request.Substring (Messages.FetchGzipCompressedCatalog.Length));
-				if (message?.UUID == catalog.UUID)
+				if (message?.UUID == catalog.UUID) {
+					LoggingService.LogInfo ("Sending back an empty catalog because UUIDs match");
 					return new MemoryStream (new byte [0]);
+				}
 				return new MemoryStream (catalog.ToGzipCompressedJson ());
 			} else {
 				return Stream.Null;
