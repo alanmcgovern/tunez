@@ -79,7 +79,7 @@ namespace Tunez
 				var request = await DeserializeRequest (socket).ConfigureAwait (false);
 
 				using (var responseStream = HandleRequest (request, catalog)) {
-					var responseLength = responseStream.Length - responseStream.Position;
+					int responseLength = (int) (responseStream.Length - responseStream.Position);
 					LoggingService.LogInfo ("Sending a response of length: {0}", responseLength);
 					await EnsureWrite (socket, BitConverter.GetBytes (IPAddress.HostToNetworkOrder (responseLength)));
 					LoggingService.LogInfo ("Sent the header, sending the data");
