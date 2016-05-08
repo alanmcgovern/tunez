@@ -30,8 +30,8 @@ namespace Tunez
 				tcp6Listener.Bind (new IPEndPoint (IPAddress.IPv6Any, ListenPort));
 
 				await Task.WhenAll (
+					BeginListeningAsync (tcp6Listener, token),
 					BeginListeningAsync (tcpListener, token),
-					BeginListeningAsync (tcp6Listener, token)
 				).ConfigureAwait (false);
 			}
 		}
@@ -54,7 +54,7 @@ namespace Tunez
 			} catch (OperationCanceledException) {
 				// We cancelled successfully
 			} catch (Exception ex) {
-				LoggingService.LogError (ex, "Unhandled exception in BeginListeningAsync");
+				LoggingService.LogError (ex, string.Format ("Unhandled exception in BeginListeningAsync. {0}", listener.AddressFamily));
 			}
 		}
 
