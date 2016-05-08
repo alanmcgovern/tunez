@@ -20,6 +20,9 @@ namespace MacTunez
 
 	public partial class ViewController : NSViewController
 	{
+		const int FileMenuItemTag = 1;
+		const int ServerMenuItemTag = 2;
+
 		PlayQueue<MacStreamingPlayer> playQueue;
 
 		string CacheDirectory {
@@ -33,6 +36,8 @@ namespace MacTunez
 		public async override void ViewDidLoad ()
 		{
 			base.ViewDidLoad ();
+			PrepareServerWindow ();
+
 			this.CatalogBrowser.TracksQueued += async (sender, tracks) => {
 				try {
 					await playQueue.PlayAsync (tracks);
@@ -47,6 +52,9 @@ namespace MacTunez
 			var server = new TunezServer (serverDetails);
 			var catalog = await server.FetchCatalog (Path.Combine (CacheDirectory, "tunez.catalog"), System.Threading.CancellationToken.None);
 
+			// Urgh, figure out proper initialization order to avoid IndexOutOfRangeExceptions accessing the toolbar items
+			// There's zero elements if i do this too quickly
+			await Task.Delay (100);
 			var playPauseItem = (NSToolbarItem) NSApplication.SharedApplication.Windows[0].Toolbar.Items[0];
 			var playPauseButton = (NSButton) NSApplication.SharedApplication.Windows[0].Toolbar.Items[0].View;
 			var progress = NSApplication.SharedApplication.Windows[0].Toolbar.Items[1];
@@ -86,6 +94,22 @@ namespace MacTunez
 		{
 			CatalogBrowser.Delegate = new CatalogBrowserDelegate (catalog);
 			CatalogBrowser.ReloadColumn (0);
+		}
+
+		void PrepareServerWindow ()
+		{
+			var serverItem = NSApplication.SharedApplication
+			                              .Menu
+			                              .ItemWithTag (FileMenuItemTag)
+			                              .Submenu
+			                              .ItemWithTag (ServerMenuItemTag);
+
+			serverItem.Activated += (sender, e) => {
+				var mainStoryboard = NSStoryboard.FromName ("Main", null);
+				var window = (NSWindowController) mainStoryboard.InstantiateControllerWithIdentifier ("SelectServerWindow");
+				window.Window.ParentWindow = NSApplication.SharedApplication.MainWindow;
+				window.ShowWindow (this);
+			};
 		}
 
 		public override NSObject RepresentedObject {
