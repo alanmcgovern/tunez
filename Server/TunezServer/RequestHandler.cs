@@ -81,6 +81,7 @@ namespace Tunez
 					var responseLength = responseStream.Length - responseStream.Position;
 					LoggingService.LogInfo ("Sending a response of length: {0}", responseLength);
 					await EnsureWrite (socket, BitConverter.GetBytes (IPAddress.HostToNetworkOrder (responseLength)));
+					LoggingService.LogInfo ("Sent the header, sending the data");
 					using (var outStream =  new NetworkStream (socket, true))
 						await responseStream.CopyToAsync (outStream, 4096, token).ConfigureAwait (false);
 				}
