@@ -17,6 +17,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)ReconnectingStream.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)NullPlayer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Caches.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)AppleConnection.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)LastFM\" />

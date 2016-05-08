@@ -72,7 +72,7 @@ namespace Tunez
 
 					foreach (var track in tracks) {
 						Monitor.Initialize (track);
-						using (var stream = new ReconnectingStream (Server.ServerDetails, NetworkChangedListener, track))
+						using (var stream = new ReconnectingStream (Server.Connection, NetworkChangedListener, track))
 							await player.PlayAsync (stream, Monitor, token);
 					}
 				}

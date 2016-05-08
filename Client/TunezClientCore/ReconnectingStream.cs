@@ -12,7 +12,7 @@ namespace Tunez
 	{
 		CancellationTokenSource cts = new CancellationTokenSource ();
 
-		string ServerAddress {
+		IConnection Connection {
 			get;
 		}
 
@@ -54,17 +54,13 @@ namespace Tunez
 			get; set;
 		}
 
-		HttpClient Downloader {
-			get; set;
-		}
-
 		Stream RemoteStream {
 			get; set;
 		}
 
-		public ReconnectingStream (ServerDetails server, INetworkChangedListener networkChangedListener, Track track)
+		public ReconnectingStream (IConnection connection, INetworkChangedListener networkChangedListener, Track track)
 		{
-			ServerAddress = server.FullAddress;
+			Connection = connection;
 			NetworkChangedListener = networkChangedListener;
 			Track = track;
 
@@ -125,28 +121,13 @@ namespace Tunez
 			var fetchTrackMessage = new FetchTrackMessage { UUID = Track.UUID, Offset = Position };
 
 			LoggingService.LogInfo ("Preparing to fetch remote stream...");
-			var message = Messages.FetchTrack + Newtonsoft.Json.JsonConvert.SerializeObject (fetchTrackMessage);
-			Downloader = new HttpClient (new ModernHttpClient.NativeMessageHandler ()) {
-				Timeout = TimeSpan.FromSeconds (15)
-			};
-
-			var request = new HttpRequestMessage (HttpMethod.Post, ServerAddress) {
-				Content = new StringContent (message, Encoding.UTF8),
-			};
-
-			var result = await Downloader.SendAsync (request, HttpCompletionOption.ResponseHeadersRead, cancellationToken);
-			var stream = RemoteStream = await result.Content.ReadAsStreamAsync ();
+			var stream = RemoteStream = await Connection.GetStreamingResponse (Messages.FetchTrack, Newtonsoft.Json.JsonConvert.SerializeObject (fetchTrackMessage));
 			LoggingService.LogInfo ("Retrieved the remote stream");
 			return stream;
 		}
 
 		void CleanUpPreviousRequest ()
 		{
-			if (Downloader != null) {
-				Downloader.CancelPendingRequests ();
-				Downloader.Dispose ();
-				Downloader = null;
-			}
 			if (RemoteStream != null) {
 				RemoteStream.Dispose ();
 				RemoteStream = null;

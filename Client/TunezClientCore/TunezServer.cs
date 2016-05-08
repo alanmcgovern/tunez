@@ -10,13 +10,13 @@ namespace Tunez
 {
 	public class TunezServer
 	{
-		public ServerDetails ServerDetails {
+		public IConnection Connection {
 			get;
 		}
 
-		public TunezServer (ServerDetails serverDetails)
+		public TunezServer (IConnection connection)
 		{
-			ServerDetails = serverDetails;
+			Connection = connection;
 		}
 
 		public async Task<Catalog> FetchCatalog (string cachedCatalogPath, CancellationToken token)
@@ -43,20 +43,18 @@ namespace Tunez
 		async Task<Catalog> FetchCatalog (string cachedCatalogPath, Catalog cachedCatalog, CancellationToken token)
 		{
 			var start = DateTime.UtcNow;
-			using (var client = new HttpClient (new ModernHttpClient.NativeMessageHandler ())) {
-				var message = Newtonsoft.Json.JsonConvert.SerializeObject (new FetchCatalogMessage { UUID = (cachedCatalog?.UUID).GetValueOrDefault (-1) });
 
-				var response = await client.PostAsync (ServerDetails.FullAddress, new StringContent (Messages.FetchGzipCompressedCatalog + message, Encoding.UTF8), token);
-				var compressedJson = await response.Content.ReadAsByteArrayAsync ();
-				LoggingService.LogInfo ("Received {0}kb catalog in {1:0.00} seconds.", compressedJson.Length, (DateTime.UtcNow - start).TotalSeconds);
-				if (compressedJson.Length == 0)
-					return cachedCatalog;
+			var message = Newtonsoft.Json.JsonConvert.SerializeObject (new FetchCatalogMessage { UUID = (cachedCatalog?.UUID).GetValueOrDefault (-1) });
 
-				cachedCatalog = Catalog.FromGzipCompressedJson (compressedJson);
-				Directory.CreateDirectory (Path.GetDirectoryName (cachedCatalogPath));
-				File.WriteAllBytes (cachedCatalogPath, compressedJson);
+			var compressedJson = await Connection.GetResponse (Messages.FetchGzipCompressedCatalog, message);
+			LoggingService.LogInfo ("Received {0}kb catalog in {1:0.00} seconds.", compressedJson.Length, (DateTime.UtcNow - start).TotalSeconds);
+			if (compressedJson.Length == 0)
 				return cachedCatalog;
-			}
+			
+			cachedCatalog = Catalog.FromGzipCompressedJson (compressedJson);
+			Directory.CreateDirectory (Path.GetDirectoryName (cachedCatalogPath));
+			File.WriteAllBytes (cachedCatalogPath, compressedJson);
+			return cachedCatalog;
 		}
 	}
 }

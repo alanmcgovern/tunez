@@ -44,7 +44,15 @@ namespace MacTunez
 			};
 
 			var serverDetails = Caches.LoadKnownServers ().FirstOrDefault (t => t.Default);
-			var server = new TunezServer (serverDetails);
+
+			// Raspberry PI
+			serverDetails = serverDetails ?? new ServerDetails  { Default = false, Hostname = "2a02:8084:2a40:3500:76da:38ff:fe54:6735", Port = 51986 };
+
+			// MacBook
+			//serverDetails = serverDetails ?? new ServerDetails  { Default = false, Hostname = "2a02:8084:2a40:3500:cc90:152d:e8ef:b7df", Port = 51986 };
+
+
+			var server = new TunezServer (new AppleConnection (serverDetails));
 			var catalog = await server.FetchCatalog (Path.Combine (CacheDirectory, "tunez.catalog"), System.Threading.CancellationToken.None);
 
 			var playPauseItem = (NSToolbarItem) NSApplication.SharedApplication.Windows[0].Toolbar.Items[0];

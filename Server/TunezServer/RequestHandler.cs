@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Net;
 using System.Text;
 using System.IO;
+using System.Net.Sockets;
 
 namespace Tunez
 {
@@ -20,16 +21,29 @@ namespace Tunez
 
 		public async Task BeginListeningAsync (CancellationToken token)
 		{
-			var listener = new HttpListener ();
-			listener.Prefixes.Add (string.Format ("http://*:{0}/", ListenPort));
+			var tcpListener = new Socket (AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+			var tcp6Listener = new Socket (AddressFamily.InterNetworkV6, SocketType.Stream, ProtocolType.Tcp);
 
+			using (tcpListener)
+			using (tcp6Listener) {
+				tcpListener.Bind (new IPEndPoint (IPAddress.Any, ListenPort));
+				tcp6Listener.Bind (new IPEndPoint (IPAddress.IPv6Any, ListenPort));
+
+				await Task.WhenAll (
+					BeginListeningAsync (tcpListener, token),
+					BeginListeningAsync (tcp6Listener, token)
+				).ConfigureAwait (false);
+			}
+		}
+
+		async Task BeginListeningAsync (Socket listener, CancellationToken token)
+		{
 			try {
-				using (token.Register (() => listener.Abort ()))
-				using (listener) {
-					listener.Start ();
+				listener.Listen (10);
+				using (token.Register (() => listener.Dispose ())) {
 					while (!token.IsCancellationRequested) {
-						var context = await listener.GetContextAsync ().ConfigureAwait (false);
-						ContextReceived (Catalog, context, token);
+						var socket = await Task.Factory.FromAsync (listener.BeginAccept (null, null), listener.EndAccept).ConfigureAwait (false);
+						ContextReceived (Catalog, socket, token);
 					}
 				}
 			} catch (ObjectDisposedException ex) {
@@ -44,49 +58,47 @@ namespace Tunez
 			}
 		}
 
-		static async void ContextReceived (Catalog catalog, HttpListenerContext context, CancellationToken token)
+		static async void ContextReceived (Catalog catalog, Socket socket, CancellationToken token)
 		{
 			try {
 				LoggingService.LogInfo ("Received a new request");
-				using (context.Response)
-					await SendResponse (catalog, context, token).ConfigureAwait (false);
+				using (socket)
+					await SendResponse (catalog, socket, token).ConfigureAwait (false);
 			} catch (IOException) {
 				LoggingService.LogInfo ("Client probably disconnected.");
 			} catch (Exception ex) {
-				context.Response.Abort ();
+				socket.Close ();
 				LoggingService.LogError (ex, "The connection died. Oops!");
 			}
 		}
 
-		static async Task SendResponse (Catalog catalog, HttpListenerContext context, CancellationToken token)
+		static async Task SendResponse (Catalog catalog, Socket socket, CancellationToken token)
 		{
 			try {
-				var request = await DeserializeRequest (context.Request).ConfigureAwait (false);
+				var request = await DeserializeRequest (socket).ConfigureAwait (false);
 
 				using (var responseStream = HandleRequest (request, catalog)) {
-					context.Response.SendChunked = true;
-					context.Response.ContentLength64 = responseStream.Length - responseStream.Position;
-					context.Response.StatusCode = (int)HttpStatusCode.OK;
-					await responseStream.CopyToAsync (context.Response.OutputStream, 4096, token).ConfigureAwait (false);
+					var responseLength = responseStream.Length - responseStream.Position;
+					await EnsureWrite (socket, BitConverter.GetBytes (IPAddress.HostToNetworkOrder (responseLength)));
+					using (var outStream =  new NetworkStream (socket, true))
+						await responseStream.CopyToAsync (outStream, 4096, token).ConfigureAwait (false);
 				}
 			} catch {
-				context.Response.Abort ();
+				socket.Close ();
 				throw;
 			}
 		}
 
-		static async Task<string> DeserializeRequest (HttpListenerRequest request)
+		static async Task<string> DeserializeRequest (Socket socket)
 		{
-			int offset = 0;
-			var buffer = new byte [(int) request.ContentLength64];
-			while (offset < buffer.Length) {
-				var read = await request.InputStream.ReadAsync (buffer, offset, buffer.Length - offset).ConfigureAwait (false);
-				if (read <= 0)
-					throw new EndOfStreamException ("We could not read all the content");
-				offset += read;
-			}
+			var messageLengthHeader = new byte [4];
+			await EnsureRead (socket, messageLengthHeader);
 
-			return Encoding.UTF8.GetString (buffer);
+			var messageLength = IPAddress.NetworkToHostOrder (BitConverter.ToInt32 (messageLengthHeader, 0));
+			var message = new byte [messageLength];
+			await EnsureRead (socket, message);
+
+			return Encoding.UTF8.GetString (message);
 		}
 
 		static Stream HandleRequest (string request, Catalog catalog)
@@ -111,6 +123,24 @@ namespace Tunez
 			} else {
 				return Stream.Null;
 			}
+		}
+
+		static async Task EnsureRead (Socket readStream, byte[] buffer)
+		{
+			await Task.Run (() => {
+				int read = 0;
+				while (buffer.Length - read > 0)
+					read += readStream.Receive (buffer, read, buffer.Length - read, SocketFlags.None);
+			});
+		}
+
+		static async Task EnsureWrite (Socket writeStream, byte[] data)
+		{
+			await Task.Run (() => {
+				var written = 0;
+				while (data.Length - written > 0)
+					written += writeStream.Send (data, written, data.Length - written, SocketFlags.None);
+			});
 		}
 	}
 }

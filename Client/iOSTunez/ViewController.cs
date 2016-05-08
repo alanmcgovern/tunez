@@ -127,7 +127,7 @@ namespace iOSTunez
 			try {
 				var token = connectingCancellation.Token;
 
-				Server = new TunezServer (serverDetails);
+				Server = new TunezServer (new AppleConnection (serverDetails));
 				var connectingViewController = StoryboardHelper.Main.CreateConnectingViewController ();
 				connectingViewController.IsConnecting = true;
 				connectingViewController.LoadingMessage = string.Format ("Fetching catalog from {0}...", serverDetails.FullAddress);

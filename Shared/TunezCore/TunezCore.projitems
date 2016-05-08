@@ -29,6 +29,7 @@
     <Compile Include="$(MSBuildThisFileDirectory)ServerDetails.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Files.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)SynchronizationContextExtensions.cs" />
+    <Compile Include="$(MSBuildThisFileDirectory)IConnection.cs" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="$(MSBuildThisFileDirectory)Catalog\" />
