@@ -1,5 +1,6 @@
 ﻿using System;
 using Tunez;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Net;
@@ -143,6 +144,7 @@ namespace Tunez
 		static async Task EnsureWrite (Socket writeStream, byte[] data)
 		{
 			await Task.Run (() => {
+				LoggingService.LogInfo ("writing: {0}", string.Join ("-", data.Select (t => t.ToString ())));
 				var written = 0;
 				while (data.Length - written > 0)
 					written += writeStream.Send (data, written, data.Length - written, SocketFlags.None);
