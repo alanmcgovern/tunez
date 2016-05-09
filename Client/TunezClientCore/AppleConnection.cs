@@ -92,9 +92,10 @@ namespace Tunez
 			}
 		}
 
-		public Task<Stream> GetStreamingResponse(string message, string payload)
+		public async Task<Stream> GetStreamingResponse(string message, string payload)
 		{
-			throw new NotImplementedException();
+			var bytes = await GetResponse (message, payload);
+			return new MemoryStream (bytes);
 		}
 	}
 }
