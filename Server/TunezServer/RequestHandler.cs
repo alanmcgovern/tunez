@@ -24,6 +24,7 @@ namespace Tunez
 		{
 			var tcpListener = new Socket (AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 			var tcp6Listener = new Socket (AddressFamily.InterNetworkV6, SocketType.Stream, ProtocolType.Tcp);
+			tcp6Listener.SetSocketOption (SocketOptionLevel.IPv6, SocketOptionName.IPv6Only, true);
 
 			using (tcpListener)
 			using (tcp6Listener) {
