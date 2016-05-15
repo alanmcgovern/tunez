@@ -16,6 +16,11 @@ namespace Tunez
 			context.Post (s => action (), null);
 		}
 
+		public static void Send (this SynchronizationContext context, Action action)
+		{
+			context.Send (d => action (), null);
+		}
+
 		public static async Task WaitOrCanceled (this Task task)
 		{
 			try {
