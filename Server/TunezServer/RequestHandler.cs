@@ -69,7 +69,6 @@ namespace Tunez
 					request = System.Uri.UnescapeDataString (context.Request.Url.Query.Substring (1));
 
 				using (var responseStream = HandleRequest (request, catalog)) {
-					context.Response.SendChunked = true;
 					context.Response.ContentLength64 = responseStream.Length - responseStream.Position;
 					context.Response.StatusCode = (int)HttpStatusCode.OK;
 					await responseStream.CopyToAsync (context.Response.OutputStream, 4096, token).ConfigureAwait (false);
