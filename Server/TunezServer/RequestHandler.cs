@@ -65,10 +65,21 @@ namespace Tunez
 
 				if (string.IsNullOrEmpty (context.Request.Url.Query))
 					request = await DeserializeRequest (context.Request).ConfigureAwait (false);
-				else
+				else {
 					request = System.Uri.UnescapeDataString (context.Request.Url.Query.Substring (1));
+				}
 
-				using (var responseStream = HandleRequest (request, catalog)) {
+				long? rangeStart =null;
+				long? rangeEnd = null;
+				if (!string.IsNullOrEmpty (context.Request.Headers ["Range"])) {
+					var part = context.Request.Headers ["Range"].Substring ("bytes=".Length);
+					rangeStart = long.Parse (part.Split ('-') [0]);
+					rangeEnd = long.Parse (part.Split ('-') [1]);
+					if (rangeEnd <= 0)
+						rangeEnd = null;
+				}
+
+				using (var responseStream = HandleRequest (request, catalog, rangeStart, rangeEnd)) {
 					context.Response.ContentLength64 = responseStream.Length - responseStream.Position;
 					context.Response.StatusCode = (int)HttpStatusCode.OK;
 					await responseStream.CopyToAsync (context.Response.OutputStream, 4096, token).ConfigureAwait (false);
@@ -93,14 +104,15 @@ namespace Tunez
 			return Encoding.UTF8.GetString (buffer);
 		}
 
-		static Stream HandleRequest (string request, Catalog catalog)
+		static Stream HandleRequest (string request, Catalog catalog, long? rangeStart, long? rangeEnd)
 		{
 			LoggingService.LogInfo ("Handling request: {0}", request);
 			if (request.StartsWith (Messages.FetchTrack, StringComparison.Ordinal)) {
 				var message = Newtonsoft.Json.JsonConvert.DeserializeObject<FetchTrackMessage> (request.Substring (Messages.FetchTrack.Length));
 				var track = catalog.FindTrack (message.UUID);
-				var stream = File.OpenRead (track.FilePath);
-				stream.Seek (message.Offset, SeekOrigin.Begin);
+				var stream = new MemoryStream (File.ReadAllBytes (track.FilePath), true);
+				stream.Position = rangeStart ?? message.Offset;
+				stream.SetLength (rangeEnd ?? stream.Length);
 				return stream;
 			} else if (request.StartsWith (Messages.FetchAlbumArt)) {
 				var message = Newtonsoft.Json.JsonConvert.DeserializeObject<FetchAlbumArtMessage> (request.Substring (Messages.FetchAlbumArt.Length));
