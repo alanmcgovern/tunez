@@ -1,5 +1,5 @@
 ﻿using System;
-using Tunez;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Net;
@@ -61,7 +61,12 @@ namespace Tunez
 		static async Task SendResponse (Catalog catalog, HttpListenerContext context, CancellationToken token)
 		{
 			try {
-				var request = await DeserializeRequest (context.Request).ConfigureAwait (false);
+				string request;
+
+				if (string.IsNullOrEmpty (context.Request.Url.Query))
+					request = await DeserializeRequest (context.Request).ConfigureAwait (false);
+				else
+					request = System.Uri.UnescapeDataString (context.Request.Url.Query.Substring (1));
 
 				using (var responseStream = HandleRequest (request, catalog)) {
 					context.Response.SendChunked = true;
@@ -98,6 +103,14 @@ namespace Tunez
 				var stream = File.OpenRead (track.FilePath);
 				stream.Seek (message.Offset, SeekOrigin.Begin);
 				return stream;
+			} else if (request.StartsWith (Messages.FetchAlbumArt)) {
+				var message = Newtonsoft.Json.JsonConvert.DeserializeObject<FetchAlbumArtMessage> (request.Substring (Messages.FetchAlbumArt.Length));
+				var track = catalog.First (t => t.AlbumArtist == message.AlbumArtist && t.Album == message.Album);
+				return File.OpenRead (track.AlbumArt);
+			} else if (request.StartsWith (Messages.FetchArtistArt)) {
+				var message = Newtonsoft.Json.JsonConvert.DeserializeObject<FetchArtistArtMessage> (request.Substring (Messages.FetchArtistArt.Length));
+				var track = catalog.First (t => t.AlbumArtist == message.AlbumArtist && !string.IsNullOrEmpty (t.AlbumArt));
+				return File.OpenRead (track.AlbumArt);
 			} else if (request.StartsWith (Messages.FetchCatalog)) {
 				var message = Newtonsoft.Json.JsonConvert.DeserializeObject<FetchCatalogMessage> (request.Substring (Messages.FetchCatalog.Length));
 				if (message?.UUID == catalog.UUID)

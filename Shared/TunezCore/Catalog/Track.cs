@@ -15,6 +15,9 @@ namespace Tunez
 			get; set;
 		}
 
+		public string AlbumArt {
+			get; set;
+		}
 
 		/// <summary>
 		/// The name of artist which created the album

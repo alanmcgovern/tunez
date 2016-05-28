@@ -45,8 +45,10 @@ namespace Tunez
 				token.ThrowIfCancellationRequested ();
 				try {
 					using (var file = TagLib.File.Create (filePath)) {
+						var art = Directory.GetFiles (Path.GetDirectoryName (filePath), "*.jpg");
 						results.Add (new Track {
 							Album = file.Tag.Album,
+							AlbumArt = art.FirstOrDefault (),
 							AlbumArtist = file.Tag.FirstAlbumArtist,
 							Disc = (int) file.Tag.Disc,
 							Duration = (int)file.Properties.Duration.TotalSeconds,
