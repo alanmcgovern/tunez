@@ -50,8 +50,8 @@ namespace Tunez
 				LoggingService.LogInfo ("Received a new request");
 				using (context.Response)
 					await SendResponse (catalog, context, token).ConfigureAwait (false);
-			} catch (IOException) {
-				LoggingService.LogInfo ("Client probably disconnected.");
+			} catch (IOException ex) {
+				LoggingService.LogInfo ("Client probably disconnected.", ex);
 			} catch (Exception ex) {
 				context.Response.Abort ();
 				LoggingService.LogError (ex, "The connection died. Oops!");
@@ -113,6 +113,7 @@ namespace Tunez
 				var stream = new MemoryStream (File.ReadAllBytes (track.FilePath), true);
 				stream.Position = rangeStart ?? message.Offset;
 				stream.SetLength (rangeEnd ?? stream.Length);
+				LoggingService.LogInfo (string.Format ("Returning a stream between: {0}-{1}. Instead of 0-{2}", rangeStart ?? message.Offset, rangeEnd ?? stream.Length, origStream.Length));
 				return stream;
 			} else if (request.StartsWith (Messages.FetchAlbumArt)) {
 				var message = Newtonsoft.Json.JsonConvert.DeserializeObject<FetchAlbumArtMessage> (request.Substring (Messages.FetchAlbumArt.Length));

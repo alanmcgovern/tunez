@@ -30,7 +30,8 @@ namespace Tunez
 				}
 			}
 
-			while (true) {
+			int retryCount = 2;
+			while (retryCount-- > 0) {
 				try {
 					return await FetchCatalog (cachedCatalogPath, cachedCatalog, token);
 				} catch (WebException) {
@@ -38,12 +39,14 @@ namespace Tunez
 					await Task.Delay (1000);
 				}
 			}
+			return cachedCatalog ?? new Catalog ();
 		}
 
 		async Task<Catalog> FetchCatalog (string cachedCatalogPath, Catalog cachedCatalog, CancellationToken token)
 		{
 			var start = DateTime.UtcNow;
 			using (var client = new HttpClient (new ModernHttpClient.NativeMessageHandler ())) {
+				client.Timeout = TimeSpan.FromSeconds (10);
 				var message = Newtonsoft.Json.JsonConvert.SerializeObject (new FetchCatalogMessage { UUID = (cachedCatalog?.UUID).GetValueOrDefault (-1) });
 
 				var response = await client.PostAsync (ServerDetails.FullAddress, new StringContent (Messages.FetchGzipCompressedCatalog + message, Encoding.UTF8), token);

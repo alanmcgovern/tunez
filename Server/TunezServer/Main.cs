@@ -72,11 +72,18 @@ namespace Tunez
 					Caches.StoreTrackLoaderPaths (paths);
 					handler.Catalog = await LoadCatalog (token);
 				}
+			} else if (command.StartsWith ("scan", StringComparison.Ordinal)) {
+				Caches.DeleteCachedCatalog ();
+				handler.Catalog = await LoadCatalog (token);
 			}
 		}
 
 		static async Task<Catalog> LoadCatalog (CancellationToken token)
 		{
+			var catalog = Caches.GetCachedCatalog ();
+			if (catalog != null)
+				return catalog;
+
 			var paths = Caches.GetTrackLoaderPaths ();
 			if (!paths.Any ()) {
 				LoggingService.LogInfo ("You need to add some search paths to load MP3s from");
@@ -91,12 +98,15 @@ namespace Tunez
 			var loader = new Progress<float> ();
 			loader.ProgressChanged += (sender, e) => LoggingService.LogInfo ("Progress: {0:P}", e);
 			var tracks = await Task.Run (() => (TrackLoader.Load (paths, loader, token)));
-			return new Catalog (tracks);
+			catalog = new Catalog (tracks);
+			Caches.StoreCachedCatalog (catalog);
+			return catalog;
 		}
 
 		static void PrintCommands ()
 		{
 			Console.Write (@"
+Type 'scan' to regenerate the catalog by scanning the disk.
 Type 'add <path>' to recursively scan for mp3s to add to the catalog.
 Type 'remove <path>' to remove a path from the catalog.
 Press 'q' to quit.
