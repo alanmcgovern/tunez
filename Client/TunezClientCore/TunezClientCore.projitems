@@ -12,13 +12,8 @@
     <Compile Include="$(MSBuildThisFileDirectory)TunezServer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)PlayQueue.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)StreamingPlayer.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)LastFM\QueryParameters.cs" />
-    <Compile Include="$(MSBuildThisFileDirectory)LastFM\Scrobbler.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)ReconnectingStream.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)NullPlayer.cs" />
     <Compile Include="$(MSBuildThisFileDirectory)Caches.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <Folder Include="$(MSBuildThisFileDirectory)LastFM\" />
   </ItemGroup>
 </Project>
