@@ -4,9 +4,3 @@
 [submodule "external/mono.nat"]
 	path = external/mono.nat
 	url = git@github.com:mono/Mono.Nat.git
-[submodule "external/sidebar"]
-	path = external/sidebar
-	url = git@github.com:jdehlin/Xamarin-Sidebar
-[submodule "external/modernhttpclient"]
-	path = external/modernhttpclient
-	url = git@github.com:paulcbetts/ModernHttpClient.git
